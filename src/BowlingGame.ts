@@ -1,70 +1,60 @@
+// Define the BowlingGame class
 export class BowlingGame {
-  private rolls: number[] = [];
+  private rolls: number[] = Array(21).fill(0); // Array to store roll results
+  private currentRoll: number = 0; // Index to track the current roll
 
-  roll(pins: number): void {
-    this.rolls.push(pins);
-  }
-
+  // Method to calculate the total score
   score(): number {
-    let totalScore = 0;
-    let rollIndex = 0;
+    let score = 0;
+    let frameIndex = 0;
 
+    // Loop through 10 frames
     for (let frame = 0; frame < 10; frame++) {
-      if (this.isStrike(rollIndex)) {
-        // Strike: add 10 plus the next two rolls
-        totalScore += 10 + this.strikeBonus(rollIndex);
-        rollIndex += 1;
-      } else if (this.isSpare(rollIndex)) {
-        // Spare: add 10 plus the next roll
-        totalScore += 10 + this.spareBonus(rollIndex);
-        rollIndex += 2;
+      if (this.isStrike(frameIndex)) {
+        // If a strike, add 10 plus the strike bonus
+        score += 10 + this.strikeBonus(frameIndex);
+        frameIndex++;
+      } else if (this.isSpare(frameIndex)) {
+        // If a spare, add 10 plus the spare bonus
+        score += 10 + this.spareBonus(frameIndex);
+        frameIndex += 2;
       } else {
-        // Open frame: add the total number of pins knocked down in two rolls
-        totalScore += this.sumOfRolls(rollIndex);
-        rollIndex += 2;
+        // If an open frame, add the sum of the rolls in the frame
+        score += this.sumOfBallsInFrame(frameIndex);
+        frameIndex += 2;
       }
     }
 
-    return totalScore;
+    return score;
   }
 
-  private isStrike(rollIndex: number): boolean {
-    return this.rolls[rollIndex] === 10;
+  // Private method: Calculate the sum of rolls in a frame
+  private sumOfBallsInFrame(frameIndex: number): number {
+    return this.rolls[frameIndex] + this.rolls[frameIndex + 1];
   }
 
-  private isSpare(rollIndex: number): boolean {
-    return this.sumOfRolls(rollIndex) === 10;
+  // Private method: Get the bonus for a strike
+  private strikeBonus(frameIndex: number): number {
+    return this.rolls[frameIndex + 1] + this.rolls[frameIndex + 2];
   }
 
-  private strikeBonus(rollIndex: number): number {
-    return this.rolls[rollIndex + 1] + this.rolls[rollIndex + 2];
+  // Private method: Get the bonus for a spare
+  private spareBonus(frameIndex: number): number {
+    return this.rolls[frameIndex + 2];
   }
 
-  private spareBonus(rollIndex: number): number {
-    return this.rolls[rollIndex + 2];
+  // Private method: Check if a frame is a strike
+  private isStrike(frameIndex: number): boolean {
+    return this.rolls[frameIndex] === 10;
   }
 
-  private sumOfRolls(rollIndex: number): number {
-    return this.rolls[rollIndex] + this.rolls[rollIndex + 1];
+  // Private method: Check if a frame is a spare
+  private isSpare(frameIndex: number): boolean {
+    return this.rolls[frameIndex] + this.rolls[frameIndex + 1] === 10;
   }
 
-  // Simple test
-  runTest(): void {
-    // Simulate some rolls
-    this.roll(3);
-    this.roll(5);
-    // ... simulate more rolls ...
-
-    // Get and log the score
-    const totalScore = this.score();
-    console.log(`Total Score: ${totalScore}`);
+  // Public method: Record a roll
+  roll(pins: number): void {
+    this.rolls[this.currentRoll++] = pins;
   }
-}
-
-// Create an instance of the BowlingGame class
-const game = new BowlingGame();
-
-// Run the simple test
-game.runTest();
-
-  
+} 

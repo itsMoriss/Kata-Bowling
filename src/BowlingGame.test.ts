@@ -1,84 +1,65 @@
-// import { BowlingGame } from './BowlingGame';
-const {BowlingGame} = require('.src/BowlingGame');
+// Import the BowlingGame class from the BowlingGame module
+import { BowlingGame } from './BowlingGame';
 
-describe('BowlingGame', () => {
-  it('should calculate score for a gutter game', () => {
-    // Arrange - Setup phase. We create an instance of the BowlingGame class
+// Declare a variable to hold an instance of BowlingGame
+let g: BowlingGame = new BowlingGame();
 
-    const game = new BowlingGame();
+// Reset the instance before each test to ensure a clean state
+beforeEach(() => {
+  g = new BowlingGame();
+});
 
-    // Act - Exercise. We simulate a gutter game by rolling 0 pins in each of the 20 rolls
+// Describe the test suite for the BowlingGame class
+describe('Bowling game', () => {
+  // Test case: Should score 0 for a gutter game
+  test('should score 0 for gutter game', () => {
+    rollMany(20, 0); // Roll 20 times with 0 pins
+    expect(g.score()).toBe(0); // Expect the score to be 0
+  });
 
-    for (let i = 0; i < 20; i++) {
-      game.roll(0); // Knock down 0 pins in each roll (gutter game)
+  // Test case: Should score 20 for all ones game
+  test('should score 20 for all ones game', () => {
+    rollMany(20, 1); // Roll 20 times with 1 pin each time
+    expect(g.score()).toBe(20); // Expect the score to be 20
+  });
+
+  // Test case: Should score 16 for a spare followed by a 3 ball
+  test('should score 16 for a spare followed by a 3 ball', () => {
+    rollSpare(); // Roll a spare
+    g.roll(3); // Roll a 3
+    expect(g.score()).toBe(16); // Expect the score to be 16
+  });
+
+  // Test case: Should score 24 for a strike followed by a 3 and a 4 ball
+  test('should score 24 for a strike followed by a 3 and a 4 ball', () => {
+    rollStrike(); // Roll a strike
+    g.roll(3); // Roll a 3
+    g.roll(4); // Roll a 4
+    rollMany(16, 0); // Roll 16 times with 0 pins
+    expect(g.score()).toBe(24); // Expect the score to be 24
+  });
+
+  // Test case: Should score 300 for a perfect game
+  test('should score 300 for a perfect game', () => {
+    rollMany(12, 10); // Roll 12 strikes (perfect game)
+    expect(g.score()).toBe(300); // Expect the score to be 300
+  });
+
+  // Helper function: Roll a strike
+  function rollStrike(): void {
+    g.roll(10);
+  }
+
+  // Helper function: Roll a spare
+  function rollSpare(): void {
+    g.roll(5);
+    g.roll(5);
+  }
+
+  // Helper function: Roll a certain number of pins for a certain number of rolls
+  function rollMany(n: number, pins: number): void {
+    for (let i = 0; i < n; i++) {
+      g.roll(pins);
     }
-
-    // Assert - Verify. We use Jest's expect fn to check if the actual result of game.score() matches the expected result
-
-    expect(game.score()).toBe(0); // The total score for a gutter game should be 0
-  });
-
-  it('should calculate score for a game of all ones', () => {
-    // Arrange
-
-    const game = new BowlingGame();
-
-    // Act
-
-    for (let i = 0; i < 20; i++) {
-      game.roll(1); // Knock down 1 pin in each roll
-    }
-
-    // Assert
-
-    expect(game.score()).toBe(20); // The total score for a game of all ones should be 20
-  });
-
-  it('should calculate score for a spare followed by 3 pins', () => {
-    // Arrange
-
-    const game = new BowlingGame();
-
-    // Act
-
-    game.roll(5);
-    game.roll(5); // Spare (knocking down 5 pins in two rolls)
-    game.roll(3); // Knock down 3 pins in the next roll
-
-    // Assert
-
-    expect(game.score()).toBe(16); // The total score for a spare followed by 3 pins should be 16
-  });
-
-  it('should calculate score for a strike followed by 3 and 4 pins', () => {
-    // Arrange
-
-    const game = new BowlingGame();
-
-    // Act
-
-    game.roll(10); // Strike (knocking down all pins in one roll)
-    game.roll(3);  // Knock down 3 pins in the next roll
-    game.roll(4);  // Knock down 4 pins in the roll after that
-
-    // Assert
-
-    expect(game.score()).toBe(24); // The total score for a strike followed by 3 and 4 pins should be 24
-  });
-
-  it('should calculate score for a perfect game (all strikes)', () => {
-    // Arrange
-
-    const game = new BowlingGame();
-
-    // Act
-
-    for (let i = 0; i < 12; i++) {
-      game.roll(10); // Twelve strikes (a perfect game)
-    }
-
-    // Assert
-
-    expect(game.score()).toBe(300); // The total score for a perfect game should be 300
-  });
+  }
 });
