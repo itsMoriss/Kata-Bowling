@@ -45,6 +45,8 @@ describe('Bowling game', () => {
     expect(g.score()).toBe(300); // Expect the score to be 300
   });
 
+  // Simulate different game scenarios in the test cases
+  
   // Helper function: Roll a strike
   function rollStrike(): void {
     g.roll(10);
