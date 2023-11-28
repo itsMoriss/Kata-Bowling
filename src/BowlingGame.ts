@@ -54,6 +54,7 @@ export class BowlingGame {
   }
 
   // Public method: Record a roll
+  // Recording the number of pins knocked down in each roll. It updates the rolls array and increments the currentRoll counter.
   roll(pins: number): void {
     this.rolls[this.currentRoll++] = pins;
   }
